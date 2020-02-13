@@ -1,0 +1,50 @@
+--- # Tomcat Installation
+- hosts: servers
+  become: yes
+  tasks: 
+  - name: install java
+    yum:
+      name: java
+      state: latest
+  - name: download tomcat 
+    get_url:
+      url: http://us.mirrors.quenda.co/apache/tomcat/tomcat-8/v8.5.51/bin/apache-tomcat-8.5.51.tar.gz
+      dest: /opt/
+  - name: rename tomcat archive
+    command: mv /opt/apache-tomcat-8.5.51.tar.gz /opt/tomcat.tar.gz
+  - name: Extract tomcat 
+    unarchive: 
+      src: /opt/tomcat.tar.gz
+      dest: /opt
+      remote_src: yes  
+  - name: rename tomcat folder 
+    command: mv /opt/apache-tomcat-8.5.51 /opt/tomcat8.5
+  - name: change /bin dir permissions
+    file:
+      path: /opt/tomcat8.5/bin
+      state: directory
+      recurse: yes
+      mode: '0755'
+  - name: change startup permssions
+    file: 
+      path: /opt/tomcat8.5/bin/startup.sh
+      mode: '0755'
+  - name: change shutdown permissions
+    file:
+      path: /opt/tomcat8.5/bin/shutdown.sh
+      mode: '0755'
+  - name: change catalina permissions
+    file: 
+      path: /opt/tomcat8.5/bin/catalina.sh
+      mode: '0755'
+  - name: create softlink for startup
+    file:
+      src: /opt/tomcat8.5/bin/startup.sh
+      dest: /usr/bin/tomcatup
+      state: link
+  - name: create softlink for shutdown
+    file: 
+      src: /opt/tomcat8.5/bin/shutdown.sh
+      dest: /usr/bin/tomcatdown
+      state: link
+

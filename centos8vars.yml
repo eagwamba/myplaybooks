@@ -1,0 +1,4 @@
+---
+# vars file for nessus agent rhel/centos/oracle8
+  nessuspkg: NessusAgent-8.2.5-es8.x86_64.rpm
+  key_value: 3a89e6c2bb9cdff3c9a37a8e3913555da3a600335cb8e68567387c3a40287141

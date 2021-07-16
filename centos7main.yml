@@ -1,0 +1,27 @@
+---
+# tasks file for rhel/centos/oracle 7
+- name: Create directory to copy nessus agent installation files
+  file:
+    path: /opt/nessus
+    state: directory
+    mode: '0755'
+- name: Copy nessus installation file to directory
+  copy:
+    src: files/{{nessuspkg}}
+    dest: /opt/nessus
+- name: Install nessus agent
+  yum:
+    name: /opt/nessus/{{nessuspkg}}
+    state: present
+- name: Start nessus agent
+  shell: /sbin/service nessusagent start
+  args:
+    chdir: /opt/nessus_agent
+- name: Configure nessus agent
+  shell: /opt/nessus_agent/sbin/nessuscli agent link --key={{key_value}} --name={{ansible_hostname}} --groups=“Linux” --cloud=cloud.tenable.com --port=443
+  args:
+    chdir: /opt/nessus_agent
+- name: Remove directory with installation files
+  file:
+    path: /opt/nessus
+    state: absent
